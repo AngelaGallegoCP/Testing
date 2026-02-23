@@ -106,6 +106,73 @@ For each question, we need:
 
 ---
 
+## Additional Questions from Workflow Analysis
+
+The following questions emerged from the [SM Workflow Map](sm-workflow-map-2026-02-23.md) (2026-02-23). They are product/UX decisions, not stakeholder-dependent, but need resolution before functional requirements can be written.
+
+---
+
+### Question 3: What Happens to the Approved Status Summary?
+
+**Context:** The W3 workflow (Status Report Preparation) ends when Elena approves the AI-generated summary. There is no "send to" step currently designed.
+
+Three options:
+
+**(A) Export only** — Elena downloads a PDF or copies to clipboard; delivery happens outside the platform (email). Lowest-lift to build. Acceptable if CluePoints is not intended to be a communication surface.
+
+**(B) In-platform routing** — Approved summary is delivered to the Program Manager's workspace Decision Queue or notification inbox. Keeps the workflow inside the platform. Requires defining a "document delivery" model.
+
+**(C) Auto-attach to study record** — Approved summary is stored in a study timeline or audit log that Program Managers and Sponsors can access by navigating to the study. No active notification. Pull model instead of push.
+
+**What we need to decide:**
+1. Is CluePoints intended to be the communication channel between SM and PM, or does communication happen outside the platform?
+2. If B or C: does the Program Manager workspace need to have a "received documents" or "study timeline" surface? (This would be a scope addition to the PM workspace brief.)
+
+---
+
+### Question 4: Should the Workspace Have a Delta View?
+
+**Context:** The W1 workflow (Morning Triage) depends on Elena seeing *what changed* since her last login — not just current state. No existing panel design provides this.
+
+Two options:
+
+**(A) Delta layer on existing panels** — Every FIRES element shows a change indicator: "2 new Red sites since last login," "1 new escalation since last login." Requires a per-user last-login timestamp and a diff layer on each health signal. Moderate engineering complexity.
+
+**(B) No delta — state only** — Elena sees current state. She is expected to remember what the state was yesterday and notice the difference herself. Low engineering complexity. High cognitive load on Elena.
+
+**What we need to decide:**
+1. Is "what changed since I was last here" a first-class design requirement for the FIRES area, or is it a nice-to-have for a later release?
+2. If yes: should this apply only to FIRES (urgent delta) or also to WORK PENDING (all items changed since last login)?
+
+---
+
+### Question 5: Is Cross-Cluster Comparison in Scope for MVP?
+
+**Context:** The W5 workflow (Site Cluster Investigation) includes a step where Elena wants to compare two site clusters side by side to identify differentiating signals. The current site cluster panel supports browsing and drill-down within a single cluster, but not comparison between two clusters.
+
+**(A) In scope for MVP** — Add a comparison mode to the Site Cluster View. Elena can select two groups and see their health signals displayed side by side.
+
+**(B) Out of scope for MVP — workaround accepted** — Elena navigates between clusters and holds the comparison in her head or uses an external tool. Acceptable if the primary MVP goal is triage and action, not analytical comparison.
+
+**(C) Out of scope for MVP — future feature flagged** — Explicitly note in the PRD that cross-cluster comparison is a known gap, defer to a named future release, and design the data model now to support it later.
+
+**What we need to decide:**
+1. Is site cluster comparison something Elena does often enough that doing it in Excel is a real pain point, or is it an edge case she can live without for now?
+
+---
+
+## What happens after these questions are answered
+
+- Q1 answered → can finalize the data access model and team workload panel design
+- Q2 answered → can finalize whether Risk Lead is a separate workspace or a conditional role within SM workspace
+- Q3 answered → can define the Status Summary routing step and determine whether PM workspace scope is affected
+- Q4 answered → can specify delta view requirements in the FIRES area functional requirements
+- Q5 answered → can scope Site Cluster View correctly in the PRD
+- All answered → PRD authoring can begin for the Study Manager workspace
+
+---
+
 *Created: 2026-02-23*
+*Updated: 2026-02-23 — Q3, Q4, Q5 added from workflow map analysis*
 *Blocking: PRD authoring for Study Manager workspace*
 *Stakeholder: [to be filled]*

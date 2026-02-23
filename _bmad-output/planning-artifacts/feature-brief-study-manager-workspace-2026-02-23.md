@@ -213,13 +213,38 @@ CDM Workspace       Central Monitor Workspace
 
 ---
 
+## Resolved Design Decisions
+
+### Q1 — Single study vs. multi-study (RESOLVED 2026-02-23)
+
+**Decision:** The Study Manager workspace must support both modes:
+
+- **Dedicated SM** (large/complex studies): one study, assigned full-time. Workspace defaults directly to the single-study view described in this brief.
+- **Multi-study SM** (smaller/simpler studies): 2–3 studies simultaneously. Workspace requires an additional layer — a **Study Triage View** — as the default landing experience.
+
+**Architectural implication: Study Triage View (multi-study mode)**
+
+When a user is assigned to more than one study, the workspace landing page changes from the Study Health Overview to a Study Triage View containing:
+
+| Element | Description |
+|---------|-------------|
+| Study health tiles | One tile per assigned study, showing RAG signal, open decision queue count, and most urgent item |
+| Cross-study decision queue | Unified queue of all items requiring SM action, across all studies, sorted by urgency |
+| Cross-study AI summary | "Here is where your attention is needed today across your studies" — AI-generated daily triage note |
+| Study-switcher | Persistent control to jump into the full single-study workspace for any assigned study |
+
+**Mode detection:** The workspace mode (single vs. multi) is determined by the number of studies currently assigned to the user. Switching between modes is automatic — no user configuration required. If an SM is mid-study on one assignment and then a second study is added, the workspace promotes to multi-study mode on next login.
+
+**Scope note:** The multi-study SM's cross-study view is deliberately shallow — it shows health signals and surfaced decisions, not a full portfolio management interface. Deep portfolio management belongs to the Program Manager workspace. The SM's multi-study view is a daily triage tool, not a governance dashboard.
+
+---
+
 ## Open Questions
 
-The following questions should be resolved before PRD authoring:
+The following questions remain open before PRD authoring:
 
 | # | Question | Why it matters | Owner |
 |---|----------|---------------|-------|
-| 1 | Does Elena manage one study or multiple studies simultaneously? | If multiple, the workspace needs a study-switcher and cross-study rollup at her level, not just at Program Manager level | Product / UX |
 | 2 | What is the org model — CRO-side SM or sponsor-side SM? | Affects data access permissions, who is in "her team," and escalation routing | Product |
 | 3 | Is the Risk Lead always a distinct person from the Study Manager, or is the SM sometimes the risk owner? | Affects whether risk governance panel belongs in SM workspace or is a separate role | Product |
 | 4 | What is the right cadence for the AI weekly summary — automatic push, or on-demand only? | Determines notification model and whether Elena feels the AI is working for her vs. generating noise | UX research |
@@ -232,12 +257,22 @@ The following questions should be resolved before PRD authoring:
 
 The Study Manager workspace is considered complete for MVP when:
 
+**Single-study mode:**
 - [ ] Elena can log in and see overall study health (RAG, site distribution, query aging, KRI adherence) without navigating to any module
 - [ ] Inbound escalations from CDMs and central monitors appear in her Decision Queue and can be actioned inline (approve, return, escalate, assign)
 - [ ] Team workload view shows queue depth and SLA performance per team member; items can be reassigned from this view
 - [ ] Site cluster view shows region/country groupings with aggregated health signals and supports group-level tagging and action assignment
 - [ ] AI-generated weekly study summary is available on demand; Elena can review, edit, and approve before it is sent or logged
 - [ ] Outbound escalations to Risk Lead and Program Manager can be initiated from any workspace panel, with AI-drafted briefing offered before submission
+
+**Multi-study mode (2–3 studies assigned):**
+- [ ] Workspace automatically promotes to Study Triage View when more than one study is assigned
+- [ ] Study tiles show per-study RAG signal, open decision count, and most urgent item
+- [ ] Cross-study decision queue shows all action items across all assigned studies, sorted by urgency
+- [ ] AI-generated daily triage note ("where your attention is needed today") is available from the triage view
+- [ ] Study-switcher is available from any point in the workspace to navigate into the full single-study view
+
+**Both modes:**
 - [ ] All actions taken from the workspace are logged with actor, timestamp, and source item for audit trail purposes
 - [ ] Workspace respects role-based data access — Elena sees only her assigned study/studies and her team members
 

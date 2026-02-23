@@ -1,0 +1,411 @@
+---
+date: 2026-02-23
+author: Root
+parent: product-brief-Testing-2026-02-22.md
+persona: Central Monitor
+status: draft
+---
+
+# Feature Brief: Central Monitor Workspace
+## CluePoints Integrated Platform — User-Centric Workspace
+
+---
+
+## Overview
+
+The Central Monitor occupies a distinctive position in the clinical oversight hierarchy. Operationally, they sit above the CDM (who manages individual queries and site-level data issues) and below the Study Manager (who governs the full trial, approves risk decisions, and owns team accountability). The Central Monitor's mandate is centralized statistical oversight: identifying patterns across sites using data-driven signals rather than reviewing individual queries one by one.
+
+This is an analytical role, not a transactional one. Where a CDM processes a high volume of discrete actions (close a query, raise a flag, review a data point), the Central Monitor does fewer but more investigative tasks — assembling cross-site patterns, evaluating whether a KRI breach at Site 14 is related to what's happening at Sites 7 and 22, and deciding whether the evidence warrants a recommendation to change a site's risk tier.
+
+The Central Monitor workspace must serve two simultaneous functions:
+
+1. **Signal aggregator** — assembling cross-site statistical patterns from KRI signals, query activity, enrollment trends, and site behavior data into a coherent picture of where risk is concentrated and why.
+2. **Risk recommender** — generating site tier change recommendations and escalations to the Study Manager, with supporting evidence and narrative, while stopping short of the approval authority that belongs to the Study Manager and Risk Lead.
+
+This brief defines the specific workspace requirements for the Central Monitor persona: what James sees when he logs in, what he can do, how AI agents assist his investigative work, and how his workspace connects to the CDMs below him and the Study Manager above him.
+
+---
+
+## Persona Recap
+
+**James** — Central monitoring specialist at a sponsor organization, responsible for remote site oversight across 8–12 sites on a Phase III trial.
+
+**Access pattern:** Daily, primarily mid-morning. His work is investigative and deliberate — he is not responding to a stream of incoming items (like a CDM) but proactively scanning for emerging patterns. Sessions are typically 60–90 minutes of focused analysis, not continuous throughout the day.
+
+**Reports to:** Study Manager (Elena)
+
+**Works alongside:** CDMs (operational site contact), Risk Lead (risk governance), on-site CRAs (relationship and visit context — out of platform scope)
+
+**Key tensions:**
+
+- Must distinguish **true site risk from statistical noise** — not every KRI breach is a real problem; not every quiet site is actually performing well. The workspace must give him enough context to make this judgment without requiring him to open three separate views.
+- Must **recommend tier changes without authority to approve them** — his role is to build the evidentiary case and pass it to the Study Manager. The workspace must make this flow natural and auditable, not frustrating or ambiguous.
+- Must track **which sites he has reviewed vs. which are new since his last session** — unlike the CDM (who sees items resolved and removed from queue), James reviews sites on a continuing basis. A site he reviewed on Tuesday is still there on Thursday. He needs to know what changed.
+- Works with **heterogeneous site populations** — within his 8–12 sites, some will be high-volume, low-risk steady performers; others will be newer activations with incomplete data; others will be persistent problem sites. His workspace must surface these differently, not treat all sites identically.
+
+---
+
+## What the Central Monitor Workspace Must Deliver
+
+### 1. Site Risk Queue
+
+The primary panel. On login, James needs to see his assigned sites ranked by current risk signal severity — not alphabetically, not by activation date, but by where risk is concentrated right now.
+
+This panel is James's daily starting point. It answers the question: "Which sites need my attention today, and why?"
+
+**Required elements per site card:**
+
+| Element | Description |
+|---------|-------------|
+| Site identifier | Site number, site name, and country — enough to distinguish sites at a glance |
+| Risk tier badge | Current tier (Tier 1 / Tier 2 / Tier 3) with visual change indicator if tier changed since last session |
+| KRI breach summary | Count of active KRI breaches; most critical breach named explicitly (e.g., "Data entry lag: 3.2x threshold") |
+| Query backlog indicator | Open query count and % overdue; simple RAG-coded |
+| Enrollment trend | Last 30-day enrollment vs. plan — shown as a sparkline or directional indicator (on-track / lagging / stopped) |
+| Days since last CM review | How long since James last marked this site as reviewed. Highlights sites that are long-overdue for a check |
+| AI-generated site narrative | 2–3 sentence summary generated by AI: what the site's current signals indicate, what is notable or changed, what action (if any) is suggested. This is a pre-assembled interpretation, not raw data |
+| "New since last review" indicator | Flags sites where something material changed since James's last session (new KRI breach, tier change, new CDM escalation) |
+| "Reviewed" session state | Whether James has marked this site as reviewed in the current session. Private to James — not visible to SMs or other users |
+
+**Panel behavior:**
+
+- Default sort: severity-weighted composite of KRI breach count, breach magnitude, and days since last review
+- Secondary sort options: by tier, by country, by days-since-review
+- Filter: by tier, by KRI breach status, by "new since last review" (most common filter James will use daily)
+- Selecting a site card opens the Site Context Assembler (Panel 3) inline or in a side panel — it does not navigate away from the queue
+
+**What this panel does NOT do:**
+
+- Does not show patient-level data
+- Does not show individual query content — shows query backlog metrics only
+- Does not allow James to resolve queries or change tier directly from the card — those require explicit actions in Panel 4 (tier recommendation) or escalation to CDM/SM
+
+---
+
+### 2. KRI Threshold Monitor
+
+A monitoring view, not a decision queue. This panel gives James a cross-site view of KRI status — which KRIs are in breach across his sites, which are approaching threshold, and where SLA response timelines stand.
+
+The critical design distinction: **Central Monitor monitors; CDMs and Study Managers decide.** James does not own KRI resolution. He uses this view to understand the pattern of breaches — are multiple sites breaching the same KRI? Is one KRI repeatedly triggered? These patterns inform his tier change recommendations and escalations.
+
+**Required elements:**
+
+| Element | Description |
+|---------|-------------|
+| KRI breach heatmap | Grid view: KRIs as rows, assigned sites as columns. Cell color indicates breach status (red = breach, amber = approaching, green = within threshold, grey = insufficient data). Lets James spot "is Site 14 the only one breaching KRI-7, or is it everywhere?" |
+| Breach magnitude | Where a KRI is breached, show how far above threshold (e.g., "1.8x threshold" or "+42% above limit") — magnitude matters for prioritization |
+| Breach age | How long has this KRI been in breach at this site. New breaches vs. persistent breaches warrant different responses |
+| SLA status | Whether the CDM or SM has opened a response action for each breach within the expected response window. James cannot take the action; he can see whether one has been taken |
+| Trend direction | Is the KRI improving, stable, or worsening since last measurement? |
+| Approaching threshold | Sites / KRIs within 15% of threshold — early warning before a breach becomes a breach |
+
+**Key interactions:**
+
+- James can click a cell in the heatmap to see the full KRI detail for that site, including breach history and the CDM's current response log
+- James can flag a KRI breach pattern (e.g., "KRI-3 in breach across 4 sites") as a signal for his tier change recommendation workflow
+- James can generate an AI analysis of a KRI pattern: "Why might this KRI be breached at these specific sites?" (see Panel 5 — AI Agent Surface)
+
+**What this panel does NOT do:**
+
+- Does not allow James to modify KRI thresholds — that requires Risk Lead approval
+- Does not create action items for CDMs — James cannot assign work to CDMs from this view; he escalates patterns to the Study Manager who routes to the team
+- Does not show KRIs for sites outside James's assigned site list
+
+---
+
+### 3. Site Context Assembler
+
+The most distinctive feature of the Central Monitor workspace. When James drills into a specific site — from the Site Risk Queue, from the KRI Threshold Monitor, or from a direct search — all relevant context is pre-assembled in a single structured view. He does not need to cross-reference three separate modules.
+
+This panel directly solves James's stated problem: "Currently he pieces this together from three separate views."
+
+**Pre-assembled context elements:**
+
+| Element | Description |
+|---------|-------------|
+| KRI breach history | Full timeline of KRI breaches for this site: which KRIs breached, when, for how long, and what response was logged. Not just current state — historical pattern |
+| Query aging detail | Query aging breakdown: open queries by category, age bucket, and responsible party. Trend vs. last 30 days |
+| Enrollment chart | Site enrollment by month vs. plan. Shows enrollment velocity, any gaps, and projection to enrollment completion |
+| Prior escalation history | All escalations this site has been part of: CDM escalations to SM, CM recommendations, SM decisions. Full narrative chain |
+| Risk tier history | Previous tier changes for this site: when changed, who recommended, who approved, what the rationale was |
+| On-site visit log | Summary of prior CRA visits (dates, findings category) — not full visit reports, but enough to know whether recent on-site activity has covered the current concern |
+| CDM activity log | Recent CDM actions on this site: queries raised, sites contacted, issues closed. Lets James understand what the CDM is already doing |
+| AI-generated site narrative | Full-length AI narrative (expandable from the 2–3 sentence card summary). Synthesizes the above context into a coherent assessment: what is happening at this site, what is the pattern, what are the risk implications, what has already been done |
+
+**Design principles for this panel:**
+
+- Context is loaded proactively when James opens a site card — not on-demand. By the time he opens it, the narrative is ready.
+- The AI narrative is the synthesis layer. The data elements above are the supporting evidence. James should be able to read the narrative and then verify against the data — not the other way around.
+- All elements are present in one scroll — James does not need to navigate between tabs within the site context view
+- The panel supports a "compare mode" where James can open two site context views side by side (resolves the need to hold cross-site comparison in his head)
+
+**What this panel does NOT do:**
+
+- Does not surface individual patient records or adverse event detail
+- Does not allow James to edit CDM logs or CDM actions — read-only view of CDM activity
+- Does not replace the full RBQM module for complete KRI configuration detail — provides the monitoring-relevant subset
+
+---
+
+### 4. Tier Change Recommendation Queue
+
+James's outbox and handoff surface. This panel shows tier change recommendations that James has drafted and submitted to the Study Manager, and also surfaces recommendations that the SM has returned to him with comments.
+
+This panel exists because James's authority boundary is explicit: he recommends, he does not approve. The workspace must make this boundary structurally visible — not just noted in documentation.
+
+**Panel sections:**
+
+**Pending recommendations (awaiting SM decision):**
+
+| Element | Description |
+|---------|-------------|
+| Site identifier and current tier | Which site, what tier it's currently at |
+| Recommended tier change | James's recommendation (e.g., "Escalate from Tier 2 to Tier 1") |
+| Rationale summary | The evidence and reasoning James documented when submitting |
+| Date submitted | When James submitted the recommendation |
+| SM acknowledgment status | Has the SM opened and read the recommendation, or is it still unacknowledged? |
+| SLA indicator | Is the SM's review within expected response window? |
+
+**Returned recommendations (SM sent back with comments):**
+
+| Element | Description |
+|---------|-------------|
+| SM comment | What the Study Manager said — why returned, what additional information is needed |
+| Action required | What James needs to do: revise the recommendation, provide additional evidence, or confirm the recommendation stands |
+| Return timestamp | When the SM returned it |
+
+**Drafts in progress (not yet submitted):**
+
+- Recommendations James has started but not submitted — saved locally for completion
+- Shows the site, the evidence assembled so far, and whether the AI narrative draft is ready for review
+
+**Key actions from this panel:**
+
+- Submit a new tier change recommendation (see Actions Ribbon)
+- Revise and resubmit a returned recommendation
+- Withdraw a pending recommendation (e.g., if the site's signals resolved before SM acted)
+- View the full recommendation detail and the Site Context Assembler side-by-side when revising
+
+**What this panel does NOT do:**
+
+- Does not allow James to approve his own recommendations
+- Does not show recommendations for sites outside his assigned list
+- Does not show the full SM decision queue — James sees only the items he submitted and their status
+
+---
+
+### 5. AI Agent Surface
+
+AI assistance is especially relevant for the Central Monitor because James's work is fundamentally interpretive — he is not executing defined procedures but assembling evidence and forming judgments. AI agents accelerate the assembling step and assist with the communication step.
+
+**AI agents available in the Central Monitor workspace:**
+
+| Agent | Trigger | Input | Output | Review required? |
+|-------|---------|-------|--------|-----------------|
+| Generate site narrative | On-demand from site card or Site Context Assembler | All pre-assembled site context (KRI history, query aging, enrollment, escalation history) | 2–3 sentence card narrative + full-length assessment | Yes — James reviews and may edit before it is displayed or used |
+| Draft tier change rationale | On-demand when James initiates a tier recommendation | Site context + James's selected evidence points | Structured rationale document for SM review | Yes — James reviews and edits before submission |
+| Draft site contact note | On-demand — James can trigger for a specific site | Site context + James's stated purpose (e.g., "follow up on data entry lag pattern") | Draft communication for site coordinator or PI | Yes — reviewed before any send action. Send capability subject to CM authority model |
+| Identify anomaly patterns across site cluster | On-demand — James selects 2+ sites or a geographic group | KRI and enrollment data across selected sites | Narrative analysis of what patterns appear across the cluster, potential common causes | Yes — James reviews; output informs his escalation or recommendation, not sent externally |
+| Explain KRI breach | On-demand from KRI Threshold Monitor | Breach data for a specific site/KRI combination | Plain-language explanation of what the KRI measures, why this site may be breaching, and what factors typically drive this breach pattern | No — informational; displayed in context |
+
+**AI interaction model:**
+
+- AI drafts are generated on-demand; James initiates them from explicit workspace controls — there is no unsolicited AI-generated content pushed into his view without his action (with the exception of the site narrative on the site card, which is generated proactively but is clearly labeled as AI-generated and does not constitute a decision or action)
+- All agent drafts are presented in a review modal before any action is taken — no AI-generated content is submitted, sent, or logged without James's explicit approval
+- James can edit drafts inline or add a revision comment ("make the enrollment trend section more prominent")
+- Approved drafts are logged with the AI-generated flag, James's review timestamp, and any edits made (audit trail)
+- The "draft site contact note" agent produces a draft only — the actual sending of a communication to a site is subject to the authority model for site contact (see Open Questions)
+- AI agents operate on data James has access to — they do not surface data outside his assigned site list or role permissions
+
+---
+
+### 6. Escalation Tracking
+
+James sits in the middle of the escalation network — he receives signals from CDMs (who flag site-level issues that are beyond their authority to resolve or that James's pattern analysis might explain) and he sends escalations and recommendations up to the Study Manager.
+
+This panel maintains visibility on both streams.
+
+**Outbound escalations to Study Manager:**
+
+| Element | Description |
+|---------|-------------|
+| Item type | Tier change recommendation, pattern-of-concern escalation, SLA-breach flag, or safety-related flag |
+| Site(s) referenced | Which sites the escalation concerns |
+| Date submitted | When James raised it |
+| SM status | Pending (not yet reviewed), Acknowledged (SM opened it), Resolved (SM acted and logged a decision) |
+| SM decision (if resolved) | What the SM decided — tier change approved, returned with comments, escalated further to Risk Lead |
+| Response SLA indicator | Is the SM's response within the expected window? |
+
+**Inbound items from CDMs (CM input requested):**
+
+| Element | Description |
+|---------|-------------|
+| CDM requestor | Which CDM is asking for CM input |
+| Site referenced | Which site |
+| Item type | Pattern analysis request, context question, or flag requiring CM review |
+| Date raised | When the CDM flagged it |
+| Age | Days since raised — older items surfaced higher |
+| James's response status | Whether James has responded or marked it reviewed |
+
+**Key actions from this panel:**
+
+- View full detail of any outbound escalation and its history
+- Respond to a CDM input request: provide analysis, ask a clarifying question, or escalate to SM on behalf of the CDM
+- Mark an inbound CDM item as "reviewed — no CM action required"
+- Nudge the SM on an outbound escalation that has exceeded its response SLA (generates a workspace notification to the SM — not an email)
+
+**What this panel does NOT do:**
+
+- Does not allow James to directly contact CDMs outside the platform's escalation structure — communications are tracked through escalation items, not free-form messaging
+- Does not show escalations between CDMs and the SM that do not involve James
+- Does not show Risk Lead governance items — those are SM-to-Risk Lead items above James's visibility
+
+---
+
+## What the Central Monitor Workspace Does NOT Do
+
+To maintain focus and prevent role confusion:
+
+- **Does not approve risk tier changes.** The workspace is structurally designed to prevent this. Tier changes appear in James's recommendation outbox and the SM's decision inbox — they do not have an "approve" action on James's side. If this distinction ever becomes ambiguous in the UI, it is a design defect.
+- **Does not manage queries directly.** Query creation, query assignment, query resolution, and query response are CDM functions. James sees query backlog metrics and aging summaries. He does not see individual query content or take query-level actions from his workspace.
+- **Does not replace or parallel on-site monitoring workflows.** CRA visits, monitoring visit reports, investigator communications through the CTMS, and site qualification activities are out of scope. James's workspace surfaces summary signals derived from on-site monitoring data but does not manage the monitoring visit process.
+- **Does not configure KRI thresholds.** James monitors KRI status. Threshold configuration and amendments require Risk Lead authority. James may flag a threshold as potentially miscalibrated (via escalation to SM), but he cannot modify it.
+- **Does not give James authority over CDM task assignment.** James cannot assign work to CDMs. He can escalate patterns to the SM, who routes action items to the appropriate team member. This prevents the CM from inadvertently creating competing instruction streams for CDMs.
+- **Does not generate regulatory-submission documents.** AI-generated site narratives and tier recommendation rationales are operational aids and internal communication drafts. They are not regulatory artifacts.
+
+---
+
+## Information Hierarchy
+
+How information flows to and from the Central Monitor workspace:
+
+```
+Study Manager Workspace (Elena)
+        ↑ (tier change recommendations, pattern escalations, SLA-breach flags out)
+        │ (tier decisions, returned recommendations, SM-initiated review requests in)
+        │
+┌─────────────────────────────────────────────────────────────────┐
+│              CENTRAL MONITOR WORKSPACE                          │  ← this brief
+│                                                                 │
+│  Site Risk Queue        │  KRI Threshold Monitor               │
+│  Site Context Assembler │  Tier Change Rec. Queue              │
+│  AI Agent Surface       │  Escalation Tracking                 │
+└─────────────────────────────────────────────────────────────────┘
+        │ (pattern flags, cluster analysis, context requests in)
+        ↓ (CM input responses, pattern analysis out)
+CDM Workspace (Sarah and team)
+
+        ↑ also fed by:
+RBQM Engine / KRI Calculation Layer
+        (KRI breach signals, threshold proximity alerts, SLA breach events)
+Site Data Feeds
+        (enrollment data, query status, data entry metrics)
+AI Agent Layer
+        (narrative generation, pattern analysis, draft composition)
+```
+
+---
+
+## Resolved Design Decisions
+
+### RD1 — Recommendation vs. decision authority (RESOLVED 2026-02-23)
+
+**Decision:** The Central Monitor can RECOMMEND a tier change but cannot APPROVE it. This is not merely a permission setting — it is a structural design requirement.
+
+**What this means in the UI:**
+
+- The tier change action available to James in the Actions Ribbon is labeled "Recommend Tier Change" — not "Change Tier," "Submit Tier Change," or any variant that implies finality.
+- When James submits a recommendation, the item appears in his **Tier Change Recommendation Queue** under "Pending — awaiting SM decision." It does not show as "submitted and pending confirmation" — it shows as "in SM's decision queue."
+- The SM's workspace shows the recommendation in her **Escalation & Decision Queue** (as defined in the SM Feature Brief) with the actions "Approve," "Return with comments," or "Escalate to Risk Lead." James has no equivalent action buttons on his side.
+- When the SM makes a decision, the item in James's queue updates to show the outcome: "Approved," "Returned," or "Escalated to Risk Lead." If returned, the SM's comment is displayed and James is prompted to revise and resubmit or withdraw.
+- There is no workflow path by which James can unilaterally advance a tier change. Even in an emergency escalation scenario, the escalation goes to the SM (or Risk Lead) who takes the approval action.
+
+**Rationale:** Regulatory compliance and audit integrity require that tier change decisions be traceable to an approving authority. Conflating the recommending role and the approving role in a single action creates compliance risk and undermines the governance model. The workspace makes this distinction visible to James every time he acts — not as a restriction message, but as the natural structure of the workflow.
+
+---
+
+### RD2 — "Reviewed" state tracking (RESOLVED 2026-02-23)
+
+**Decision:** Each site card maintains a "reviewed" state that is session-scoped and private to James. This state is not visible to Study Managers, CDMs, or other users.
+
+**What this means in the UI:**
+
+- When James marks a site as "reviewed" (via an explicit "Mark Reviewed" action on the site card, or by completing a substantive interaction with the Site Context Assembler and dismissing it), the site card is visually distinguished from unreviewed sites — lighter visual weight, a checkmark indicator, or a "reviewed" badge.
+- The "reviewed" state resets between sessions. When James logs in for a new session, all sites start as "unreviewed" — a clean slate.
+- A site that was reviewed in a prior session and has had **no material change** since review is shown as "reviewed — no new signals." A site that was reviewed and has had a **material change** (new KRI breach, tier change, new CDM escalation, significant enrollment shift) is shown as "new activity since last review" and is not treated as previously reviewed — it surfaces with the "new since last review" indicator.
+- "Material change" is defined as: a new KRI breach (not previously in breach), a KRI breach resolving, a site tier change, a new escalation involving this site, or an enrollment event (missed month, restart). Minor changes (one additional open query, normal fluctuation in KRI metrics) do not reset the reviewed state.
+- The "new since last review" filter in the Site Risk Queue surfaces only the sites with the "new activity since last review" indicator — James's fastest path to focusing on what actually changed.
+
+**Why this is CM-private:** James's review state is a personal workflow tracking tool — it is his way of knowing where he is in a session or across sessions. It is not a compliance record, not a status visible to the SM, and not a substitute for formal escalation or documentation. If the SM could see James's reviewed state, it would create ambiguity (does "reviewed" mean "no action needed"?) and potentially discourage thorough review behavior. The review state is James's scratchpad, not an audit trail.
+
+---
+
+## Open Questions
+
+The following questions remain open before PRD authoring:
+
+| # | Question | Why it matters | Owner |
+|---|----------|---------------|-------|
+| 1 | Who assigns sites to the Central Monitor — geography, risk tier, or explicit assignment from the Study Manager? | Determines how the Site Risk Queue is populated and whether James can see sites before they are formally assigned to him. A geography-based model means James always sees his country cluster; an SM-assignment model means the SM curates James's view | Product |
+| 2 | Does the Central Monitor see ALL sites on the study, or only his assigned sites? | For large studies with multiple CMs dividing site responsibility, this matters significantly. If James sees all sites, his queue is polluted with sites others own. If he sees only assigned sites, who handles cross-CM pattern analysis? | Product |
+| 3 | Can a Central Monitor initiate a KRI threshold change recommendation, or is that exclusively a Risk Lead / SM function? | Affects the Actions Ribbon design. If James can recommend a threshold adjustment (e.g., "I believe KRI-3 is set too sensitively for this population"), there needs to be a recommendation pathway for that separate from the tier change flow. If not, James's only recourse is to escalate a threshold concern via the general escalation pathway | Product / Risk Lead |
+| 4 | How does the CM workspace interact with the CDM workspace — can James see the CDM's query resolution activity for a site, or only the aggregated signals? | Affects the Site Context Assembler design. If James can see CDM activity logs (queries raised, site contacts made, issues resolved), the Site Context Assembler becomes meaningfully richer. If CDM activity is restricted to the CDM and SM, James's view is limited to signals derived from that activity | Product / Engineering |
+| 5 | Can James send site contact notes directly, or does every site communication go through the CDM? | Affects the AI "draft site contact note" agent scope. If James can send directly, the agent needs a send pathway and the send must be logged in the site contact history. If site contact always goes through CDM, James's agent output is a draft he passes to the CDM — which changes the handoff flow | Product / Clinical Ops |
+| 6 | Is the Central Monitor role ever split — e.g., one CM for statistical signal review, one for site communication? | Some sponsor organizations separate the analytical CM from the communicating CM. If this is a supported org model, the workspace needs to accommodate CMs with different action permissions (view-and-recommend vs. view-only) | Product |
+
+---
+
+## Acceptance Criteria (MVP)
+
+The Central Monitor workspace is considered complete for MVP when:
+
+**Site Risk Queue:**
+- [ ] James can log in and see his assigned sites ranked by risk signal severity, with KRI breach summary, query backlog indicator, enrollment trend, and days-since-last-review visible on each site card without opening the site
+- [ ] The "new since last review" indicator correctly identifies sites with material changes since James's last session, and a filter to show only those sites is available and functional
+- [ ] James can mark a site as "reviewed" from the site card; the reviewed state persists for the session and is not visible to other users
+- [ ] The reviewed state resets on new session; sites with material changes since the last review are correctly flagged as "new activity since last review" even if James reviewed them in a prior session
+- [ ] Selecting a site card opens the Site Context Assembler without navigating away from the Site Risk Queue
+
+**KRI Threshold Monitor:**
+- [ ] James can see KRI breach status across all assigned sites in a cross-site heatmap (KRI × site grid)
+- [ ] Breach magnitude and breach age are visible per cell; approaching-threshold sites are surfaced with a distinct indicator
+- [ ] James can click any cell to see full KRI breach history and CDM response log for that site/KRI combination
+- [ ] James cannot modify KRI thresholds from this view — there is no threshold-edit action exposed to the CM role
+
+**Site Context Assembler:**
+- [ ] When James opens a site, KRI breach history, query aging detail, enrollment chart, prior escalation history, risk tier history, CDM activity log, and AI-generated site narrative are all visible without navigating between tabs or modules
+- [ ] The AI-generated site narrative is pre-loaded by the time James opens the site card (not generated on-demand after he opens it)
+- [ ] James can open two site context views side by side for cross-site comparison
+- [ ] All elements in the assembler are read-only for James — no CDM logs, query records, or escalation histories are editable from this view
+
+**Tier Change Recommendation Queue:**
+- [ ] James can initiate a tier change recommendation from the Actions Ribbon or from a site card; the action is labeled "Recommend Tier Change" throughout — no UI element implies James is approving the change
+- [ ] Submitted recommendations appear in James's outbox with SM acknowledgment status and response SLA indicator
+- [ ] When the SM returns a recommendation with comments, James receives a workspace notification and the returned item appears in his queue with the SM's comment and a prompt to revise or withdraw
+- [ ] There is no action available to James to approve his own recommendation — the approval action exists only in the SM's workspace
+- [ ] James can withdraw a pending recommendation; the withdrawal is logged with actor and timestamp
+
+**AI Agent Surface:**
+- [ ] James can trigger site narrative generation from a site card and from the Site Context Assembler; the generated narrative is presented for review before it is displayed or used
+- [ ] James can trigger a tier change rationale draft when initiating a recommendation; the draft is presented for review and editing before submission
+- [ ] James can trigger the "identify anomaly patterns across site cluster" agent by selecting 2+ sites; the agent output is a narrative analysis for James's review, not an action taken on his behalf
+- [ ] All AI-generated content that James approves is logged with: AI-generated flag, James's review timestamp, and a record of any edits made
+- [ ] No AI-generated content is submitted, sent, or logged without James's explicit approval action
+
+**Escalation Tracking:**
+- [ ] James can see all outbound escalations to the SM with their current status (pending, acknowledged, resolved) and the SM's decision if resolved
+- [ ] James can see all inbound items from CDMs requesting CM input, sorted by age, and can respond or mark as reviewed
+- [ ] James can "nudge" the SM on a pending escalation that has exceeded its response SLA; the nudge generates a workspace notification in the SM's workspace and is logged in the escalation record
+
+**3-Area Structure:**
+- [ ] FIRES area correctly surfaces: newly KRI-breached sites (new since last session), sites whose tier changed since James's last session, and any safety-flagged signals requiring immediate CM awareness
+- [ ] ACTIONS RIBBON provides one-click access to: review next unreviewed site, recommend tier change, draft site contact note (AI-assisted), escalate to SM, identify cluster pattern (AI-assisted), and search sites by name or identifier
+- [ ] WORK PENDING area contains: full site queue ranked by risk, pending tier change recommendations, AI drafts awaiting James's review, and inbound CDM items requiring CM input
+- [ ] All actions taken from the workspace are logged with actor, timestamp, source item, and action type for audit trail purposes
+- [ ] James's workspace respects role-based data access — he sees only his assigned sites and their associated data
+
+---
+
+*Document created: 2026-02-23*
+*Parent: product-brief-Testing-2026-02-22.md*
+*Next step: Workflow map — Central Monitor workspace (cm-workflow-map); then PRD authoring — CM workspace functional requirements*

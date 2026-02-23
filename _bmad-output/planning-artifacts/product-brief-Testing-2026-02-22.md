@@ -13,7 +13,7 @@ project: Testing (CluePoints Integrated Platform)
 
 ## Executive Summary
 
-CluePoints users — clinical data managers, biostatisticians, and medical reviewers — currently enter the platform into siloed modules with no unified sense of "where they are" or "what matters now." Each session begins with manual navigation, context reconstruction, and cognitive overhead that delays actual clinical oversight work.
+CluePoints users — clinical data managers, central monitors, medical reviewers, study managers, risk leads, and program managers — currently enter the platform into siloed modules with no unified sense of "where they are" or "what matters now." Each session begins with manual navigation, context reconstruction, and cognitive overhead that delays actual clinical oversight work.
 
 The **User-Centric Workspace** is the new entry point and landing page of the CluePoints integrated platform. It replaces a fragmented module-first experience with a role-aware, task-forward home that surfaces the user's active work, prioritized signals, and AI-assisted next actions — all in one cohesive surface.
 
@@ -34,7 +34,7 @@ As AI agents are introduced across the platform, they risk becoming isolated too
 - **Wasted time at session start:** Users spend 5–15 minutes navigating to reassemble their working context before doing any actual oversight work.
 - **Missed signals:** Risk signals and query exceptions that surface in one module go unnoticed by users primarily working in another.
 - **Underutilized AI:** AI-assisted suggestions buried inside modules are acted on less frequently because they require intentional navigation to find.
-- **Role-context mismatch:** A biostatistician and a CDM have fundamentally different priorities; a one-size-fits-all navigation structure forces both into the same default path.
+- **Role-context mismatch:** A risk lead and a program manager have fundamentally different priorities from a CDM; a one-size-fits-all navigation structure forces all of them into the same default path.
 - **Cognitive fatigue:** Reassembling context manually every session contributes to oversight errors and alert fatigue.
 
 ### Why Existing Solutions Fall Short
@@ -53,7 +53,7 @@ A **role-aware, AI-integrated Workspace** that serves as the primary entry point
 1. **Surfaces what matters now:** Prioritized work items (queries, risk signals, site flags, overdue actions) ranked by urgency and study context.
 2. **Maintains continuity:** Resumes where the user left off — active studies, open queries, in-progress reviews — with full session context preserved.
 3. **Hosts AI agents natively:** End-to-end assistive AI agents are accessible directly from the Workspace. Users can trigger, monitor, and review agent actions without entering a module.
-4. **Adapts to role:** CDMs see query queues and site-level anomalies; biostatisticians see statistical signal summaries and protocol deviation patterns; medical reviewers see patient safety flags and data narratives.
+4. **Adapts to role:** CDMs see query queues and site-level anomalies; central monitors see centralized statistical signals and site performance trends; medical reviewers see patient safety flags and data narratives; study managers see cross-study risk rollups and team workloads; risk leads see KRI/KQI threshold status and risk plan adherence; program managers see portfolio health and milestone status across studies.
 5. **Bridges modules:** The Workspace is the connective layer — actions taken here propagate into the relevant modules; module activity surfaces back into the Workspace feed.
 
 ### Key Differentiators
@@ -80,13 +80,13 @@ A **role-aware, AI-integrated Workspace** that serves as the primary entry point
 
 ---
 
-**2. Biostatistician**
+**2. Central Monitor**
 
-*Profile:* Marcus, a senior biostatistician at a sponsor company, is responsible for statistical monitoring plans and reviewing anomaly signals across 2 active trials. He is not in CluePoints every day but relies on it for weekly oversight reviews and escalation decisions.
+*Profile:* James, a central monitoring specialist at a sponsor, is responsible for remote site oversight across 8–12 sites on a Phase III trial. He works in CluePoints daily, analyzing centralized statistical signals, site performance trends, and KRI thresholds to identify sites that need intervention without waiting for an on-site visit.
 
-*Problem experience:* Marcus finds CluePoints hard to "enter cold" — when he logs in after several days away, there's no summary of what has changed since his last visit. He must navigate module by module to reconstruct the current state of each study. Statistical signal summaries require him to run or locate specific reports.
+*Problem experience:* James's workflow requires constant cross-referencing between the RBQM module, site-level signal reports, and query status. When a site crosses a KRI threshold, he needs to understand the full context — query history, prior flags, enrollment trends — before deciding on action. Currently he pieces this together from three separate views. He also struggles to track which sites he has already reviewed vs. which are new since his last session.
 
-*What success looks like:* Marcus logs in and sees a "since your last visit" summary: new statistical signals, updated risk scores, queries opened or closed. He can drill into what changed without re-running reports. AI-generated pattern summaries give him a starting point for deeper analysis.
+*What success looks like:* James logs in and sees a site-prioritized view ranked by risk signal severity. For each flagged site, context is already assembled: KRI breach detail, query backlog, and AI-generated site narrative. He can escalate, assign a follow-up action, or trigger an AI agent to draft a site contact — without leaving the workspace.
 
 ---
 
@@ -98,13 +98,48 @@ A **role-aware, AI-integrated Workspace** that serves as the primary entry point
 
 *What success looks like:* Dr. Priya receives a workspace notification, logs in, and sees the safety flag with full context: the data record, the AI-generated narrative summary, the history of prior reviews, and a set of recommended actions. She can review and act in a single session without external coordination.
 
-### Secondary Users
+---
 
-**Study Manager / Trial Lead:** Uses the Workspace as a high-level oversight surface — seeing portfolio-level risk status and team workload across studies. Does not need query-level granularity but needs cross-study signal aggregation.
+**4. Study Manager**
+
+*Profile:* Elena, a study manager at a CRO, owns end-to-end delivery of a Phase II/III trial across 20+ sites and a cross-functional team of CDMs, central monitors, and data managers. She is accountable for study timelines, risk escalation decisions, and team performance.
+
+*Problem experience:* Elena has no aggregated view of her study's health in CluePoints. She must ask her CDMs to prepare status summaries, manually pull site-level reports, and triangulate team workload from outside the system. Risk escalations often reach her late because there is no workspace surface that shows her what is building before it becomes critical.
+
+*What success looks like:* Elena opens her workspace and sees her study health at a glance: site risk distribution, open query aging, team action queue, and escalation items requiring her decision. She can spot an emerging site cluster issue and assign it to the central monitor without a meeting or email. AI-generated study summaries give her what she needs for stakeholder updates without manual report-pulling.
+
+---
+
+**5. Risk Lead**
+
+*Profile:* David, a risk lead at a sponsor, owns the risk-based monitoring strategy for a portfolio of trials. He defines KRI/KQI thresholds, reviews risk plan adherence, and approves risk tier changes for sites and studies. He interacts with CluePoints primarily at a governance and oversight level — not query-by-query.
+
+*Problem experience:* David cannot see the state of his risk plans from a single location. KRI threshold breaches are only visible if he navigates into individual study risk modules. Risk plan adherence — whether CDMs and central monitors are acting on signals within SLA — is invisible to him without running reports. He finds out about systemic issues through escalation, not through proactive signal.
+
+*What success looks like:* David's workspace shows a risk governance view: KRI breach counts by study, threshold adherence rates, sites with unresolved risk escalations older than SLA, and AI-flagged patterns that suggest a risk plan adjustment is warranted. He can review and approve risk tier changes directly from the workspace, with full audit trail.
+
+---
+
+**6. Program Manager**
+
+*Profile:* Nadia, a program manager at a sponsor, oversees a portfolio of 4–6 trials within a therapeutic area. She is responsible for portfolio-level reporting to senior leadership, resource allocation across studies, and identifying cross-study risks or interdependencies. She uses CluePoints as one of several tools but needs it to give her a fast, reliable pulse on portfolio health.
+
+*Problem experience:* Nadia has no portfolio view in CluePoints. She relies on study managers to provide status updates and manually assembles a portfolio picture. When leadership asks about data quality across the program, she cannot answer from the platform — she synthesizes from emails and spreadsheets. She is aware CluePoints holds the signal she needs but cannot surface it at her level of abstraction.
+
+*What success looks like:* Nadia's workspace shows a program-level view: study health tiles for each trial, cross-study risk trends, milestone status, and flagged items requiring her attention or escalation approval. AI-generated program summaries are ready for her weekly leadership report. She can drill from portfolio to study to site in three clicks when she needs detail.
+
+### Secondary Users
 
 **Platform Administrator:** Configures role definitions, workspace layouts, and AI agent permissions per organization. Does not use the workspace operationally but is responsible for the role-mapping infrastructure that makes it work.
 
-### User Journey
+### Future Personas (Planned — Not in Current Scope)
+
+The following personas are identified for inclusion in a future iteration of this brief once their workspace requirements are more fully defined:
+
+- **Biostatistician** — statistical monitoring plan ownership, anomaly signal review, and cross-study pattern analysis
+- **CRA (Clinical Research Associate)** — on-site and remote monitoring, visit report management, and site relationship context
+
+### User Journeys
 
 **CDM — Daily Triage Flow:**
 
@@ -114,6 +149,38 @@ A **role-aware, AI-integrated Workspace** that serves as the primary entry point
 4. *Delegate to AI:* Triggers an AI agent to draft responses for the 2 lower-priority queries.
 5. *Monitor:* AI agent status appears in the workspace activity feed. CDM reviews drafts when ready.
 6. *Close loop:* Approves agent-drafted responses; items leave the active feed. Day's priority work is complete in under 45 minutes.
+
+**Central Monitor — Site Risk Review Flow:**
+
+1. *Login:* Workspace shows site-prioritized view — sites ranked by risk signal severity, with KRI breach indicators and days-since-last-review.
+2. *Assess top site:* Opens site card inline — KRI breach detail, query backlog summary, enrollment trend, AI-generated site narrative already assembled.
+3. *Decide:* Determines site needs a targeted follow-up communication. Triggers AI agent to draft a site contact note from the workspace.
+4. *Move to next:* Reviews second-priority site, marks it as "reviewed — no action" from the feed.
+5. *Handoff:* Escalates one site to Study Manager with one click; escalation surfaces in Study Manager's workspace feed.
+
+**Study Manager — Weekly Study Health Review:**
+
+1. *Login:* Workspace opens to study health view — site risk distribution, open query aging chart, team action queue, and items awaiting her decision.
+2. *Spot pattern:* Notices 3 sites in the same country cluster are all showing elevated query aging. Identifies it as a potential site coordinator training issue.
+3. *Act:* Creates a risk note tagged to the cluster, assigns investigation to central monitor from workspace.
+4. *Review escalations:* Two items from CDMs are in her decision queue — reviews both and approves one, returns one with comments.
+5. *Export summary:* AI-generated study status summary is ready; she reviews and sends to program manager from workspace.
+
+**Risk Lead — KRI Governance Review (Weekly):**
+
+1. *Login:* Workspace shows risk governance view — KRI breach count by study, SLA adherence rate for breach resolution, sites with open escalations past due.
+2. *Identify concern:* One study shows a pattern of recurrent KRI breaches on the same indicator — suggests the threshold is miscalibrated or a systemic site issue.
+3. *Review context:* Drills into the study's risk plan from the workspace; sees breach history and CDM response log.
+4. *Approve adjustment:* Approves a risk tier change recommended by the study manager. Action is logged with audit trail.
+5. *Flag for program:* Surfaces a cross-study pattern observation to Program Manager via workspace escalation.
+
+**Program Manager — Portfolio Pulse (Bi-Weekly):**
+
+1. *Login:* Workspace shows program health tiles for each active trial — RAG status, milestone health, open escalations.
+2. *Identify outlier:* One study tile is amber — opens it to see the underlying signals (site risk concentration, enrollment lag).
+3. *Drill down:* Study manager's last status summary is linked from the tile; reviews without navigating to a separate module.
+4. *Escalate or hold:* Decides the risk is being managed; notes it for leadership report.
+5. *Prepare update:* AI-generated program summary drafted and ready. Reviews, edits one line, and exports for the weekly leadership briefing.
 
 ---
 
@@ -161,10 +228,10 @@ A **role-aware, AI-integrated Workspace** that serves as the primary entry point
 ### Core Features
 
 **1. Role-Aware Workspace Feed**
-- Personalized, prioritized feed of actionable items based on user role (CDM, biostatistician, medical reviewer)
-- Items sourced from: query management, RBQM risk signals, site flags, protocol deviations
+- Personalized, prioritized feed of actionable items based on user role (CDM, Central Monitor, Medical Reviewer, Study Manager, Risk Lead, Program Manager)
+- Items sourced from: query management, RBQM risk signals, site flags, protocol deviations, KRI breaches, escalation queue
 - Clinical prioritization logic: safety signals > risk signals > administrative items
-- "New since last visit" grouping for infrequent users
+- "New since last visit" grouping for infrequent users (Medical Reviewer, Risk Lead, Program Manager)
 
 **2. Contextual Study Cards**
 - My Studies panel: cards for each study the user is assigned to
@@ -187,7 +254,7 @@ A **role-aware, AI-integrated Workspace** that serves as the primary entry point
 
 ### Out of Scope for MVP
 
-- **Portfolio-level Workspace views** (cross-study rollup for study managers) — post-MVP
+- **Cross-program rollup views** (multi-program aggregation for Program Managers beyond their assigned portfolio) — post-MVP
 - **Custom workspace layout configuration** (drag-and-drop widget arrangement) — post-MVP
 - **Workspace-native report building** — users navigate to reporting module for custom reports; Workspace shows curated summaries only
 - **Mobile-optimized Workspace** — desktop-first for MVP; mobile responsive pass in follow-on sprint
